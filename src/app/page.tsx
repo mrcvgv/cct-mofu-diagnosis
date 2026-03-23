@@ -6,6 +6,12 @@ import { MORPH_PROFILES } from "@/data/morphProfiles";
 import { TYPE_PROFILES } from "@/data/typeProfiles";
 import { diagnose } from "@/engine/diagnosisEngine";
 import { AXIS_DEFINITIONS } from "@/data/axes";
+import {
+  LINKS,
+  buildTweetText,
+  buildTwitterShareUrl,
+  buildLineShareUrl,
+} from "@/config/links";
 import type { DiagnosisResult, Question } from "@/types";
 
 type Phase = "start" | "quiz" | "result";
@@ -18,7 +24,9 @@ const LABELS = [
   "とても\nあてはまる",
 ];
 
-// ---- Start Screen ----
+// ================================================================
+// Start Screen
+// ================================================================
 function StartScreen({ onStart }: { onStart: () => void }) {
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
@@ -56,7 +64,9 @@ function StartScreen({ onStart }: { onStart: () => void }) {
   );
 }
 
-// ---- Quiz Screen ----
+// ================================================================
+// Quiz Screen
+// ================================================================
 function QuizScreen({
   question,
   current,
@@ -113,7 +123,191 @@ function QuizScreen({
   );
 }
 
-// ---- Result Screen ----
+// ================================================================
+// Share Section
+// ================================================================
+function ShareSection({
+  morphName,
+  typeName,
+  description,
+}: {
+  morphName: string;
+  typeName: string;
+  description: string;
+}) {
+  const [copied, setCopied] = useState(false);
+
+  const tweetText = buildTweetText(morphName, typeName, description);
+  const tweetUrl = buildTwitterShareUrl(tweetText);
+  const lineUrl = buildLineShareUrl(morphName, typeName);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(
+        `CCTモフ診断で【${morphName}】(${typeName})でした！ 👇\nhttps://cct-mofu-diagnosis.vercel.app`
+      );
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // fallback: select text
+    }
+  };
+
+  return (
+    <div className="bg-white/10 backdrop-blur rounded-2xl p-5 mb-4">
+      <p className="text-white font-bold text-sm mb-1">友達にシェアしよう</p>
+      <p className="text-white/50 text-xs mb-4">
+        「あなたは何モフ？」と誘ってバズらせよう🔥
+      </p>
+
+      <div className="grid grid-cols-3 gap-2 mb-3">
+        {/* X (Twitter) */}
+        <a
+          href={tweetUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex flex-col items-center gap-1.5 py-3 rounded-xl
+            bg-black/50 hover:bg-black/70 active:scale-95
+            transition-all border border-white/10 text-white"
+        >
+          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+          </svg>
+          <span className="text-xs font-medium">Xでシェア</span>
+        </a>
+
+        {/* LINE */}
+        <a
+          href={lineUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex flex-col items-center gap-1.5 py-3 rounded-xl
+            bg-green-600/70 hover:bg-green-600/90 active:scale-95
+            transition-all border border-green-400/20 text-white"
+        >
+          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314" />
+          </svg>
+          <span className="text-xs font-medium">LINEで送る</span>
+        </a>
+
+        {/* URL コピー */}
+        <button
+          onClick={handleCopy}
+          className={`flex flex-col items-center gap-1.5 py-3 rounded-xl
+            active:scale-95 transition-all border text-white
+            ${copied
+              ? "bg-emerald-600/70 border-emerald-400/20"
+              : "bg-white/15 hover:bg-white/25 border-white/10"
+            }`}
+        >
+          {copied ? (
+            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          ) : (
+            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+              <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+            </svg>
+          )}
+          <span className="text-xs font-medium">{copied ? "コピー済" : "URLコピー"}</span>
+        </button>
+      </div>
+
+      {/* 友達誘導CTA */}
+      <div className="bg-yellow-400/10 border border-yellow-400/20 rounded-xl p-3 text-center">
+        <p className="text-yellow-300 text-xs font-medium">
+          🐾 友達の結果が気になる？ → このページのURLを送ってみて！
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// ================================================================
+// Monetization Section
+// ================================================================
+function MonetizationSection({ morphName }: { morphName: string }) {
+  return (
+    <div className="space-y-3 mb-4">
+
+      {/* グッズCTA（主力収益） */}
+      <a
+        href={LINKS.shop}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center gap-4 p-4 rounded-2xl
+          bg-gradient-to-r from-amber-500/20 to-orange-500/20
+          border border-amber-400/30 hover:border-amber-400/60
+          active:scale-95 transition-all group"
+      >
+        <div className="text-3xl">🛍️</div>
+        <div className="flex-1">
+          <p className="text-white font-bold text-sm">{morphName}のグッズをチェック</p>
+          <p className="text-white/50 text-xs">アクスタ・缶バッジ・ステッカーなど</p>
+        </div>
+        <svg className="w-4 h-4 text-white/40 group-hover:text-white/70 transition-colors"
+          viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M9 18l6-6-6-6" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </a>
+
+      {/* Discordコミュニティ（ファン囲い込み） */}
+      <a
+        href={LINKS.discord}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center gap-4 p-4 rounded-2xl
+          bg-indigo-600/20 border border-indigo-400/30
+          hover:border-indigo-400/60 active:scale-95 transition-all group"
+      >
+        <div className="text-3xl">💬</div>
+        <div className="flex-1">
+          <p className="text-white font-bold text-sm">モフコミュニティに参加</p>
+          <p className="text-white/50 text-xs">Discordで他のモフ民と語ろう</p>
+        </div>
+        <svg className="w-4 h-4 text-white/40 group-hover:text-white/70 transition-colors"
+          viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M9 18l6-6-6-6" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </a>
+
+      {/* 有料詳細レポートCTA（将来の主力収益） */}
+      <a
+        href={LINKS.premium}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center gap-4 p-4 rounded-2xl
+          bg-gradient-to-r from-pink-600/20 to-violet-600/20
+          border border-pink-400/30 hover:border-pink-400/60
+          active:scale-95 transition-all group"
+      >
+        <div className="text-3xl">✨</div>
+        <div className="flex-1">
+          <p className="text-white font-bold text-sm">
+            詳細レポートを見る
+            <span className="ml-2 text-xs bg-pink-500/60 text-white px-2 py-0.5 rounded-full">
+              近日公開
+            </span>
+          </p>
+          <p className="text-white/50 text-xs">
+            相性モフ・仕事タイプ・今月の運勢など
+          </p>
+        </div>
+        <svg className="w-4 h-4 text-white/40 group-hover:text-white/70 transition-colors"
+          viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M9 18l6-6-6-6" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </a>
+
+    </div>
+  );
+}
+
+// ================================================================
+// Result Screen
+// ================================================================
 function ResultScreen({
   result,
   onReset,
@@ -133,12 +327,10 @@ function ResultScreen({
 
           <p className="text-white/50 text-sm mb-3">あなたのモフは…</p>
 
-          {/* モフ名 — 最大表示 */}
           <h2 className="text-5xl font-black text-white mb-3 tracking-tight">
             {result.main.morph.name}
           </h2>
 
-          {/* 系はバッジとして補助表示 */}
           <div className="flex justify-center mb-5">
             <span className="px-4 py-1.5 rounded-full text-sm font-medium
               bg-white/20 text-white/90 border border-white/30">
@@ -146,19 +338,16 @@ function ResultScreen({
             </span>
           </div>
 
-          {/* フルネーム（小さく） */}
           <p className="text-white/40 text-xs mb-5 tracking-wider">
             {result.main.fullName}
           </p>
 
-          {/* 説明 */}
           {result.main.morph.description && (
             <p className="text-white/80 text-sm leading-relaxed bg-white/10 rounded-xl p-4 text-left">
               {result.main.morph.description}
             </p>
           )}
 
-          {/* タグ */}
           {result.main.morph.tags && result.main.morph.tags.length > 0 && (
             <div className="mt-4 flex flex-wrap gap-2 justify-center">
               {result.main.morph.tags.map((tag) => (
@@ -169,6 +358,16 @@ function ResultScreen({
             </div>
           )}
         </div>
+
+        {/* ===== シェアゾーン ===== */}
+        <ShareSection
+          morphName={result.main.morph.name}
+          typeName={result.main.type.name}
+          description={result.main.morph.description ?? result.main.fullName}
+        />
+
+        {/* ===== 収益化ゾーン ===== */}
+        <MonetizationSection morphName={result.main.morph.name} />
 
         {/* ===== サブ候補 ===== */}
         {result.sub.length > 0 && (
@@ -248,7 +447,9 @@ function ResultScreen({
   );
 }
 
-// ---- Main Page ----
+// ================================================================
+// Main Page
+// ================================================================
 export default function Home() {
   const [phase, setPhase] = useState<Phase>("start");
   const [currentQ, setCurrentQ] = useState(0);
