@@ -242,41 +242,72 @@ function ShareButtons({ result }: { result: DiagnosisResult }) {
   };
 
   return (
-    <div className="bg-white/8 rounded-2xl p-4 mb-4">
-      <p className="text-white/50 text-xs mb-3 text-center">
-        結果をシェアする ／ 友達のモフタイプも気になる…？
-      </p>
-      <div className="grid grid-cols-3 gap-2">
-        <a href={tweetUrl} target="_blank" rel="noopener noreferrer"
-          className="flex flex-col items-center gap-1.5 py-3 rounded-xl
-            bg-black/50 hover:bg-black/70 active:scale-95
-            transition-all border border-white/10 text-white">
-          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-          </svg>
-          <span className="text-xs font-medium">Xでシェア</span>
-        </a>
+    <div className="relative mb-6">
+      {/* 背後のグロー */}
+      <div className="absolute inset-0 rounded-3xl blur-xl animate-pulse"
+        style={{ background: "linear-gradient(135deg, rgba(236,72,153,0.5) 0%, rgba(139,92,246,0.5) 100%)" }} />
 
-        <a href={lineUrl} target="_blank" rel="noopener noreferrer"
-          className="flex flex-col items-center gap-1.5 py-3 rounded-xl
-            bg-green-600/70 hover:bg-green-600/90 active:scale-95
-            transition-all border border-green-400/20 text-white">
-          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314" />
-          </svg>
-          <span className="text-xs font-medium">LINEで送る</span>
-        </a>
+      <div className="relative rounded-3xl overflow-hidden border-2 border-pink-400/50"
+        style={{ background: "linear-gradient(135deg, rgba(236,72,153,0.12) 0%, rgba(139,92,246,0.18) 100%)" }}>
 
-        <button onClick={handleCopy}
-          className={`flex flex-col items-center gap-1.5 py-3 rounded-xl
-            active:scale-95 transition-all border text-white
-            ${copied ? "bg-emerald-600/70 border-emerald-400/20" : "bg-white/15 hover:bg-white/25 border-white/10"}`}>
-          {copied
-            ? <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" /></svg>
-            : <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" /></svg>
-          }
-          <span className="text-xs font-medium">{copied ? "コピー済" : "URLコピー"}</span>
-        </button>
+        {/* ヘッダー */}
+        <div className="px-5 pt-5 pb-4 text-center">
+          <p className="text-white font-black text-xl tracking-tight leading-tight">
+            友達のモフタイプも診断してみて！
+          </p>
+          <p className="text-white/55 text-xs mt-1.5">スクショ or リンクでシェア</p>
+        </div>
+
+        {/* X と LINE — 大きめ2列 */}
+        <div className="px-4 pb-3 grid grid-cols-2 gap-3">
+          <a href={tweetUrl} target="_blank" rel="noopener noreferrer"
+            className="flex flex-col items-center justify-center gap-2.5 py-5 rounded-2xl
+              bg-black hover:bg-zinc-800 active:scale-95
+              transition-all shadow-xl shadow-black/50 text-white">
+            <svg className="w-7 h-7" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+            </svg>
+            <span className="text-sm font-bold tracking-wide">Xでシェア</span>
+          </a>
+
+          <a href={lineUrl} target="_blank" rel="noopener noreferrer"
+            className="flex flex-col items-center justify-center gap-2.5 py-5 rounded-2xl
+              active:scale-95 transition-all shadow-xl shadow-green-900/50 text-white"
+            style={{ backgroundColor: "#06C755" }}>
+            <svg className="w-7 h-7" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314" />
+            </svg>
+            <span className="text-sm font-bold tracking-wide">LINEで送る</span>
+          </a>
+        </div>
+
+        {/* URLコピー — 全幅 */}
+        <div className="px-4 pb-5">
+          <button onClick={handleCopy}
+            className={`w-full flex items-center justify-center gap-2.5 py-4 rounded-2xl
+              active:scale-95 transition-all font-bold text-sm tracking-wide
+              ${copied
+                ? "bg-emerald-500 text-white shadow-lg shadow-emerald-900/40"
+                : "bg-white/15 hover:bg-white/25 border-2 border-white/30 text-white"
+              }`}>
+            {copied ? (
+              <>
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                コピーしました！
+              </>
+            ) : (
+              <>
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" />
+                  <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+                </svg>
+                リンクをコピーする
+              </>
+            )}
+          </button>
+        </div>
       </div>
     </div>
   );
