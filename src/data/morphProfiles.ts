@@ -1,9 +1,24 @@
 import { MorphProfile } from "../types";
 
+// ============================================================
+// 20モフ — キャラクタープロフィール
+// ============================================================
+//
+// characterName: CANDYCONTOWNのキャラクター名（例: "エイプ"）
+//   → 結果カードで「エイプ (CANDYCONTOWN)」と表示
+//   → TODO: 各キャラクターの正式名称に更新してください
+//
+// imageUrl: キャラクター画像のパス
+//   → /public/characters/{morphId}.png に画像を配置するだけで反映
+//   → 画像未配置の場合はモフ名の頭文字アイコンで代替表示
+// ============================================================
+
 export const MORPH_PROFILES: MorphProfile[] = [
   {
     id: "usa",
     name: "うさモフ",
+    characterName: "TODO: キャラクター名",   // TODO
+    imageUrl: "/characters/usa.png",
     catchphrase: "やさしさの守護者",
     loveType: "献身タイプ",
     weakness: "尽くしすぎること",
@@ -14,6 +29,8 @@ export const MORPH_PROFILES: MorphProfile[] = [
   {
     id: "kurousa",
     name: "黒うさモフ",
+    characterName: "TODO: キャラクター名",   // TODO
+    imageUrl: "/characters/kurousa.png",
     catchphrase: "静かなる共鳴者",
     loveType: "謎めいた魅力タイプ",
     weakness: "心を開かないこと",
@@ -24,6 +41,8 @@ export const MORPH_PROFILES: MorphProfile[] = [
   {
     id: "kotori",
     name: "ことりモフ",
+    characterName: "TODO: キャラクター名",   // TODO
+    imageUrl: "/characters/kotori.png",
     catchphrase: "自由な歌い手",
     loveType: "自由恋愛タイプ",
     weakness: "飽きっぽいこと",
@@ -34,6 +53,8 @@ export const MORPH_PROFILES: MorphProfile[] = [
   {
     id: "resa",
     name: "れさモフ",
+    characterName: "TODO: キャラクター名",   // TODO
+    imageUrl: "/characters/resa.png",
     catchphrase: "永遠の探検家",
     loveType: "好奇心旺盛タイプ",
     weakness: "集中力が続かないこと",
@@ -44,6 +65,8 @@ export const MORPH_PROFILES: MorphProfile[] = [
   {
     id: "nezu",
     name: "ねずモフ",
+    characterName: "TODO: キャラクター名",   // TODO
+    imageUrl: "/characters/nezu.png",
     catchphrase: "小さな戦略家",
     loveType: "計算高いタイプ",
     weakness: "疑い深すぎること",
@@ -54,6 +77,8 @@ export const MORPH_PROFILES: MorphProfile[] = [
   {
     id: "pen",
     name: "ペンモフ",
+    characterName: "TODO: キャラクター名",   // TODO
+    imageUrl: "/characters/pen.png",
     catchphrase: "誠実な職人",
     loveType: "真面目一途タイプ",
     weakness: "融通が利かないこと",
@@ -64,6 +89,8 @@ export const MORPH_PROFILES: MorphProfile[] = [
   {
     id: "pen2",
     name: "ペンモフ2",
+    characterName: "TODO: キャラクター名",   // TODO
+    imageUrl: "/characters/pen2.png",
     catchphrase: "つなぐチームの要",
     loveType: "みんなに好かれるタイプ",
     weakness: "八方美人になりがちなこと",
@@ -74,6 +101,8 @@ export const MORPH_PROFILES: MorphProfile[] = [
   {
     id: "neko",
     name: "ねこモフ",
+    characterName: "TODO: キャラクター名",   // TODO
+    imageUrl: "/characters/neko.png",
     catchphrase: "孤高のカリスマ",
     loveType: "ツンデレタイプ",
     weakness: "素直になれないこと",
@@ -84,6 +113,8 @@ export const MORPH_PROFILES: MorphProfile[] = [
   {
     id: "raio",
     name: "ライオモフ",
+    characterName: "TODO: キャラクター名",   // TODO
+    imageUrl: "/characters/raio.png",
     catchphrase: "生まれながらの王",
     loveType: "引き寄せるタイプ",
     weakness: "周りが見えなくなること",
@@ -94,6 +125,8 @@ export const MORPH_PROFILES: MorphProfile[] = [
   {
     id: "chii",
     name: "ちーモフ",
+    characterName: "TODO: キャラクター名",   // TODO
+    imageUrl: "/characters/chii.png",
     catchphrase: "最速の覇者",
     loveType: "勝負恋愛タイプ",
     weakness: "急ぎすぎること",
@@ -104,6 +137,8 @@ export const MORPH_PROFILES: MorphProfile[] = [
   {
     id: "hai",
     name: "ハイモフ",
+    characterName: "TODO: キャラクター名",   // TODO
+    imageUrl: "/characters/hai.png",
     catchphrase: "天下無敵の宴会部長",
     loveType: "波乱万丈タイプ",
     weakness: "疲れを認めないこと",
@@ -114,6 +149,8 @@ export const MORPH_PROFILES: MorphProfile[] = [
   {
     id: "zou",
     name: "ぞうモフ",
+    characterName: "TODO: キャラクター名",   // TODO
+    imageUrl: "/characters/zou.png",
     catchphrase: "記憶する賢者",
     loveType: "長期戦タイプ",
     weakness: "変化を嫌うこと",
@@ -124,6 +161,8 @@ export const MORPH_PROFILES: MorphProfile[] = [
   {
     id: "saru",
     name: "さるモフ",
+    characterName: "エイプ",
+    imageUrl: "/characters/saru.png",
     catchphrase: "天才型ムードメーカー",
     loveType: "策略家タイプ",
     weakness: "考えすぎること",
@@ -134,6 +173,8 @@ export const MORPH_PROFILES: MorphProfile[] = [
   {
     id: "bafu",
     name: "ばふモフ",
+    characterName: "TODO: キャラクター名",   // TODO
+    imageUrl: "/characters/bafu.png",
     catchphrase: "不動の守護者",
     loveType: "安定重視タイプ",
     weakness: "保守的すぎること",
@@ -144,6 +185,8 @@ export const MORPH_PROFILES: MorphProfile[] = [
   {
     id: "inu",
     name: "いぬモフ",
+    characterName: "TODO: キャラクター名",   // TODO
+    imageUrl: "/characters/inu.png",
     catchphrase: "永遠の親友",
     loveType: "全力純愛タイプ",
     weakness: "依存しがちなこと",
@@ -154,6 +197,8 @@ export const MORPH_PROFILES: MorphProfile[] = [
   {
     id: "wol",
     name: "ウォルモフ",
+    characterName: "TODO: キャラクター名",   // TODO
+    imageUrl: "/characters/wol.png",
     catchphrase: "深海の哲学者",
     loveType: "深みにはまるタイプ",
     weakness: "孤立しすぎること",
@@ -164,6 +209,8 @@ export const MORPH_PROFILES: MorphProfile[] = [
   {
     id: "kou",
     name: "こうモフ",
+    characterName: "TODO: キャラクター名",   // TODO
+    imageUrl: "/characters/kou.png",
     catchphrase: "闇に輝く異端児",
     loveType: "インパクト残すタイプ",
     weakness: "理解されにくいこと",
@@ -174,6 +221,8 @@ export const MORPH_PROFILES: MorphProfile[] = [
   {
     id: "pan",
     name: "パンモフ",
+    characterName: "TODO: キャラクター名",   // TODO
+    imageUrl: "/characters/pan.png",
     catchphrase: "世界が愛する存在",
     loveType: "包まれるタイプ",
     weakness: "流されやすいこと",
@@ -184,6 +233,8 @@ export const MORPH_PROFILES: MorphProfile[] = [
   {
     id: "robo",
     name: "ロボモフ",
+    characterName: "TODO: キャラクター名",   // TODO
+    imageUrl: "/characters/robo.png",
     catchphrase: "完全無欠の論理者",
     loveType: "論理的恋愛タイプ",
     weakness: "感情を無視しがちなこと",
@@ -194,6 +245,8 @@ export const MORPH_PROFILES: MorphProfile[] = [
   {
     id: "nin",
     name: "にんモフ",
+    characterName: "TODO: キャラクター名",   // TODO
+    imageUrl: "/characters/nin.png",
     catchphrase: "影の実力者",
     loveType: "秘密主義タイプ",
     weakness: "信頼しないこと",

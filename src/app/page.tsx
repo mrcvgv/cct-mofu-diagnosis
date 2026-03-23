@@ -119,6 +119,10 @@ function QuizScreen({
 // ================================================================
 function ShareCard({ result }: { result: DiagnosisResult }) {
   const { morph, type } = result.main;
+  const [imgError, setImgError] = useState(false);
+  const hasImage = !!morph.imageUrl && !imgError;
+  const showCharName = morph.characterName && !morph.characterName.startsWith("TODO");
+
   return (
     <div
       className="relative overflow-hidden rounded-3xl mb-1
@@ -138,8 +142,38 @@ function ShareCard({ result }: { result: DiagnosisResult }) {
         {/* ブランド */}
         <p className="text-white/30 text-xs tracking-[0.25em] mb-5">CANDYCONTOWN モフ診断</p>
 
+        {/* ── キャラクター画像ゾーン ── */}
+        <div className="flex flex-col items-center mb-5">
+          {hasImage ? (
+            <img
+              src={morph.imageUrl!}
+              alt={morph.characterName ?? morph.name}
+              onError={() => setImgError(true)}
+              className="w-48 h-48 object-contain drop-shadow-2xl"
+            />
+          ) : (
+            /* 画像未設置時のフォールバック */
+            <div className="w-40 h-40 rounded-full bg-white/8 border border-white/15
+              flex items-center justify-center mb-1">
+              <span className="text-5xl text-white/25 select-none">{morph.name[0]}</span>
+            </div>
+          )}
+
+          {/* キャラクター名 + CANDYCONTOWN */}
+          {showCharName && (
+            <div className="mt-3">
+              <p className="text-white font-bold text-lg tracking-wide">
+                {morph.characterName}
+              </p>
+              <p className="text-white/35 text-xs tracking-widest">
+                (CANDYCONTOWN)
+              </p>
+            </div>
+          )}
+        </div>
+
         {/* 系バッジ */}
-        <div className="flex justify-center mb-4">
+        <div className="flex justify-center mb-3">
           <span className="px-5 py-1.5 rounded-full text-sm font-medium
             bg-white/15 border border-white/25 text-white/90">
             {type.name}

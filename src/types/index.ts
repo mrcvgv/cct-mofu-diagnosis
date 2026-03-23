@@ -58,6 +58,16 @@ export interface MorphProfile {
   description?: string;
   /** 一言ラベル: "天才型ムードメーカー" など */
   catchphrase?: string;
+  /**
+   * CANDYCONTOWNキャラクター名（例: "エイプ"）
+   * 結果カードで「エイプ (CANDYCONTOWN)」と表示される
+   */
+  characterName?: string;
+  /**
+   * キャラクター画像のパス（例: "/characters/saru.png"）
+   * /public/characters/ 以下に画像を配置する
+   */
+  imageUrl?: string;
   /** 恋愛タイプ（プレミアムティーザー用） */
   loveType?: string;
   /** 弱点（プレミアムティーザー用） */
