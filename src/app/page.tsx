@@ -358,119 +358,151 @@ function CommunitySection({ morphName }: { morphName: string }) {
 }
 
 // ================================================================
-// Premium Teaser（「続きが気になる」設計）
+// Premium Teaser（住人登録導線）
 // ================================================================
 function PremiumTeaser({ result }: { result: DiagnosisResult }) {
   const { morph } = result.main;
 
-  // 部分的に隠すユーティリティ
-  const mask = (text: string) => text.slice(0, 2) + "●".repeat(Math.max(2, text.length - 2));
-
   return (
-    <div className="rounded-2xl overflow-hidden mb-4 border border-white/15">
+    <div className="mb-4 space-y-3">
 
-      {/* ヘッダー */}
-      <div className="bg-white/8 px-5 py-4 border-b border-white/10">
-        <p className="text-white font-bold text-sm">
-          {morph.name}についてもっと知る
-        </p>
-        <p className="text-white/45 text-xs mt-0.5">
-          続きはプレミアム診断で
-        </p>
+      {/* ロックされた住人特典プレビュー */}
+      <div className="rounded-2xl overflow-hidden border border-white/15">
+        <div className="bg-white/8 px-5 py-4 border-b border-white/10">
+          <p className="text-white/45 text-xs tracking-widest mb-0.5">CANDYCONTOWN</p>
+          <p className="text-white font-bold text-sm">住人になるともっと見える</p>
+        </div>
+        <div className="bg-white/5 divide-y divide-white/8">
+
+          <div className="flex items-center justify-between px-5 py-3.5">
+            <div className="flex items-center gap-3">
+              <span className="text-base">💕</span>
+              <div>
+                <p className="text-white/55 text-xs">恋愛タイプ</p>
+                <p className="text-white/25 text-sm font-medium blur-sm select-none">
+                  {morph.loveType ?? "●●●タイプ"}
+                </p>
+              </div>
+            </div>
+            <span className="text-white/25 text-base">🔒</span>
+          </div>
+
+          <div className="flex items-center justify-between px-5 py-3.5">
+            <div className="flex items-center gap-3">
+              <span className="text-base">⚡</span>
+              <div>
+                <p className="text-white/55 text-xs">弱点</p>
+                <p className="text-white/25 text-sm font-medium blur-sm select-none">
+                  {morph.weakness ?? "●●●●こと"}
+                </p>
+              </div>
+            </div>
+            <span className="text-white/25 text-base">🔒</span>
+          </div>
+
+          <div className="flex items-center justify-between px-5 py-3.5">
+            <div className="flex items-center gap-3">
+              <span className="text-base">💞</span>
+              <div>
+                <p className="text-white/55 text-xs">相性1位のモフ</p>
+                <p className="text-white/25 text-sm font-medium blur-sm select-none">
+                  ？？？モフ
+                </p>
+              </div>
+            </div>
+            <span className="text-white/25 text-base">🔒</span>
+          </div>
+
+          <div className="flex items-center justify-between px-5 py-3.5">
+            <div className="flex items-center gap-3">
+              <span className="text-base">🔮</span>
+              <div>
+                <p className="text-white/55 text-xs">今月の{morph.name}のテーマ</p>
+                <p className="text-white/25 text-sm font-medium blur-sm select-none">
+                  ●●と●●の時
+                </p>
+              </div>
+            </div>
+            <span className="text-white/25 text-base">🔒</span>
+          </div>
+
+          <div className="flex items-center justify-between px-5 py-3.5">
+            <div className="flex items-center gap-3">
+              <span className="text-base">🏠</span>
+              <div>
+                <p className="text-white/55 text-xs">デジタル住民票</p>
+                <p className="text-white/25 text-sm font-medium blur-sm select-none">
+                  {morph.name}住人No.●●●●
+                </p>
+              </div>
+            </div>
+            <span className="text-white/25 text-base">🔒</span>
+          </div>
+        </div>
       </div>
 
-      {/* ロック済みコンテンツ */}
-      <div className="bg-white/5 divide-y divide-white/8">
-
-        {/* 恋愛タイプ */}
-        <div className="flex items-center justify-between px-5 py-3.5">
-          <div className="flex items-center gap-3">
-            <span className="text-lg">💕</span>
+      {/* Plan A: 住人プラン（サブスク・主推し） */}
+      <a href={LINKS.fortune} target="_blank" rel="noopener noreferrer"
+        className="relative block rounded-2xl overflow-hidden active:scale-95 transition-all"
+        style={{ background: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #db2777 100%)" }}>
+        <div className="px-5 py-5">
+          <div className="flex items-start justify-between mb-3">
             <div>
-              <p className="text-white/70 text-xs">恋愛タイプ</p>
-              <p className="text-white/30 text-sm font-medium blur-sm select-none">
-                「{morph.loveType ?? mask("●●●タイプ")}」
-              </p>
+              <p className="text-white/70 text-xs tracking-widest mb-0.5">CANDYCONTOWN</p>
+              <p className="text-white font-black text-lg leading-tight">住人プランに登録する</p>
+            </div>
+            <div className="text-right shrink-0 ml-3">
+              <p className="text-white font-black text-2xl leading-none">¥980</p>
+              <p className="text-white/60 text-xs">/ 月</p>
             </div>
           </div>
-          <span className="text-white/30 text-lg">🔒</span>
+          <ul className="space-y-1.5 mb-4">
+            {[
+              "デジタル住民票（シェア可能）",
+              "詳細占い毎月更新（恋愛・仕事・対人）",
+              "20モフ全員との相性マップ",
+              "Discord 住人専用チャンネル",
+              "限定壁紙・バッジ（月替わり）",
+              "新キャラ・イベントの先行情報",
+            ].map((item) => (
+              <li key={item} className="flex items-center gap-2 text-white/85 text-xs">
+                <span className="text-white/50 text-xs">✓</span>
+                {item}
+              </li>
+            ))}
+          </ul>
+          <div className="flex items-center justify-between">
+            <p className="text-white/55 text-xs">年払い ¥9,800（2ヶ月分お得）</p>
+            <span className="flex items-center gap-1 bg-white/20 text-white text-xs font-bold px-3 py-1.5 rounded-full">
+              登録する
+              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M9 18l6-6-6-6" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </span>
+          </div>
         </div>
+      </a>
 
-        {/* 弱点 */}
-        <div className="flex items-center justify-between px-5 py-3.5">
-          <div className="flex items-center gap-3">
-            <span className="text-lg">⚡</span>
-            <div>
-              <p className="text-white/70 text-xs">あなたの弱点</p>
-              <p className="text-white/30 text-sm font-medium blur-sm select-none">
-                「{morph.weakness ?? mask("●●●●こと")}」
-              </p>
-            </div>
+      {/* Plan B: 単発占い（買い切り・低ハードル） */}
+      <a href={LINKS.compatibility} target="_blank" rel="noopener noreferrer"
+        className="flex items-center justify-between w-full px-5 py-4 rounded-2xl
+          bg-white/8 hover:bg-white/12 active:scale-95
+          transition-all border border-white/20">
+        <div className="flex items-center gap-3">
+          <span className="text-xl">🔮</span>
+          <div className="text-left">
+            <p className="text-white font-semibold text-sm">まずは単発占いを試す</p>
+            <p className="text-white/45 text-xs mt-0.5">
+              {morph.name}の詳細プロフィール + 今月の運勢
+            </p>
           </div>
-          <span className="text-white/30 text-lg">🔒</span>
         </div>
-
-        {/* 相性1位 */}
-        <div className="flex items-center justify-between px-5 py-3.5">
-          <div className="flex items-center gap-3">
-            <span className="text-lg">💞</span>
-            <div>
-              <p className="text-white/70 text-xs">相性1位のモフ</p>
-              <p className="text-white/30 text-sm font-medium blur-sm select-none">
-                「？？？モフ」
-              </p>
-            </div>
-          </div>
-          <span className="text-white/30 text-lg">🔒</span>
+        <div className="text-right shrink-0 ml-3">
+          <p className="text-white font-bold text-lg leading-none">¥490</p>
+          <p className="text-white/40 text-xs">買い切り</p>
         </div>
+      </a>
 
-        {/* 今月のテーマ */}
-        <div className="flex items-center justify-between px-5 py-3.5">
-          <div className="flex items-center gap-3">
-            <span className="text-lg">🔮</span>
-            <div>
-              <p className="text-white/70 text-xs">今月の{morph.name}のテーマ</p>
-              <p className="text-white/30 text-sm font-medium blur-sm select-none">
-                「●●と●●の時」
-              </p>
-            </div>
-          </div>
-          <span className="text-white/30 text-lg">🔒</span>
-        </div>
-      </div>
-
-      {/* 解放CTA */}
-      <div className="bg-white/8 px-5 py-4 space-y-2">
-        <a href={LINKS.fortune} target="_blank" rel="noopener noreferrer"
-          className="flex items-center justify-between w-full px-4 py-3 rounded-xl
-            bg-gradient-to-r from-amber-500/25 to-yellow-500/25
-            border border-amber-400/30 hover:border-amber-400/60
-            active:scale-95 transition-all">
-          <div className="flex items-center gap-3">
-            <span className="text-xl">🔮</span>
-            <div className="text-left">
-              <p className="text-white font-semibold text-sm">詳細占いを見る</p>
-              <p className="text-white/45 text-xs">恋愛運・仕事運・今月のテーマ</p>
-            </div>
-          </div>
-          <span className="text-xs bg-amber-500/50 text-amber-200 px-2.5 py-1 rounded-full shrink-0 ml-2">有料</span>
-        </a>
-
-        <a href={LINKS.compatibility} target="_blank" rel="noopener noreferrer"
-          className="flex items-center justify-between w-full px-4 py-3 rounded-xl
-            bg-gradient-to-r from-pink-600/25 to-rose-600/25
-            border border-pink-400/30 hover:border-pink-400/60
-            active:scale-95 transition-all">
-          <div className="flex items-center gap-3">
-            <span className="text-xl">💞</span>
-            <div className="text-left">
-              <p className="text-white font-semibold text-sm">相性診断をする</p>
-              <p className="text-white/45 text-xs">{morph.name}と相性のいいモフは？</p>
-            </div>
-          </div>
-          <span className="text-xs bg-pink-500/50 text-pink-200 px-2.5 py-1 rounded-full shrink-0 ml-2">有料</span>
-        </a>
-      </div>
     </div>
   );
 }
