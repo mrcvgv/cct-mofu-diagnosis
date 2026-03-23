@@ -56,6 +56,12 @@ export interface MorphProfile {
   /** 各軸の理想値 (1〜10) */
   axes: AxisScores;
   description?: string;
+  /** 一言ラベル: "天才型ムードメーカー" など */
+  catchphrase?: string;
+  /** 恋愛タイプ（プレミアムティーザー用） */
+  loveType?: string;
+  /** 弱点（プレミアムティーザー用） */
+  weakness?: string;
   tags?: string[];
 }
 
