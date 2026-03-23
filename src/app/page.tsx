@@ -10,7 +10,13 @@ import type { DiagnosisResult, Question } from "@/types";
 
 type Phase = "start" | "quiz" | "result";
 
-const LABELS = ["まったく\nあてはまらない", "あまり\nあてはまらない", "どちらでも\nない", "やや\nあてはまる", "とても\nあてはまる"];
+const LABELS = [
+  "まったく\nあてはまらない",
+  "あまり\nあてはまらない",
+  "どちらでも\nない",
+  "やや\nあてはまる",
+  "とても\nあてはまる",
+];
 
 // ---- Start Screen ----
 function StartScreen({ onStart }: { onStart: () => void }) {
@@ -67,7 +73,6 @@ function QuizScreen({
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="max-w-md w-full">
-        {/* Progress */}
         <div className="mb-6">
           <div className="flex justify-between text-white/60 text-sm mb-2">
             <span>Q{current} / {total}</span>
@@ -81,14 +86,12 @@ function QuizScreen({
           </div>
         </div>
 
-        {/* Question Card */}
         <div className="bg-white/10 backdrop-blur rounded-2xl p-8 mb-6">
           <p className="text-white text-xl font-medium leading-relaxed text-center">
             {question.text}
           </p>
         </div>
 
-        {/* Answer Buttons */}
         <div className="grid grid-cols-5 gap-2">
           {[1, 2, 3, 4, 5].map((score) => (
             <button
@@ -123,21 +126,39 @@ function ResultScreen({
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="max-w-md w-full">
-        {/* Main Result */}
+
+        {/* ===== Main Result: モフが主役 ===== */}
         <div className="bg-gradient-to-br from-pink-500/30 to-violet-600/30 backdrop-blur
           border border-white/20 rounded-3xl p-8 mb-4 text-center">
-          <p className="text-white/60 text-sm mb-2">あなたのモフタイプは…</p>
-          <h2 className="text-4xl font-bold text-white mb-1">
-            {result.main.fullName}
+
+          <p className="text-white/50 text-sm mb-3">あなたのモフは…</p>
+
+          {/* モフ名 — 最大表示 */}
+          <h2 className="text-5xl font-black text-white mb-3 tracking-tight">
+            {result.main.morph.name}
           </h2>
-          <p className="text-purple-200 text-sm mb-4">
-            {result.main.type.name} / {result.main.morph.name}
+
+          {/* 系はバッジとして補助表示 */}
+          <div className="flex justify-center mb-5">
+            <span className="px-4 py-1.5 rounded-full text-sm font-medium
+              bg-white/20 text-white/90 border border-white/30">
+              {result.main.type.name}
+            </span>
+          </div>
+
+          {/* フルネーム（小さく） */}
+          <p className="text-white/40 text-xs mb-5 tracking-wider">
+            {result.main.fullName}
           </p>
+
+          {/* 説明 */}
           {result.main.morph.description && (
-            <p className="text-white/80 text-sm leading-relaxed bg-white/10 rounded-xl p-4">
+            <p className="text-white/80 text-sm leading-relaxed bg-white/10 rounded-xl p-4 text-left">
               {result.main.morph.description}
             </p>
           )}
+
+          {/* タグ */}
           {result.main.morph.tags && result.main.morph.tags.length > 0 && (
             <div className="mt-4 flex flex-wrap gap-2 justify-center">
               {result.main.morph.tags.map((tag) => (
@@ -149,35 +170,32 @@ function ResultScreen({
           )}
         </div>
 
-        {/* Sub Results */}
+        {/* ===== サブ候補 ===== */}
         {result.sub.length > 0 && (
           <div className="bg-white/10 backdrop-blur rounded-2xl p-5 mb-4">
-            <p className="text-white/60 text-xs mb-3">サブ候補</p>
+            <p className="text-white/50 text-xs mb-3">こちらのモフも近いかも</p>
             <div className="space-y-2">
               {result.sub.map((s, i) => (
                 <div key={i} className="flex items-center gap-3 bg-white/10 rounded-xl p-3">
-                  <span className="text-white/40 text-xs w-4">{i + 1}</span>
-                  <span className="text-white font-medium">{s.fullName}</span>
+                  <span className="text-white/30 text-xs w-4">{i + 1}</span>
+                  <div>
+                    <span className="text-white font-semibold text-sm">{s.morph.name}</span>
+                    <span className="text-white/40 text-xs ml-2">{s.type.name}</span>
+                  </div>
                 </div>
               ))}
             </div>
           </div>
         )}
 
-        {/* 系スコア */}
+        {/* ===== 系スコア + 軸詳細 ===== */}
         <div className="bg-white/10 backdrop-blur rounded-2xl p-5 mb-4">
-          <button
-            onClick={() => setShowDetail(!showDetail)}
-            className="w-full flex items-center justify-between text-white/60 text-xs mb-2"
-          >
-            <span>系スコア詳細</span>
-            <span>{showDetail ? "▲" : "▼"}</span>
-          </button>
+          <p className="text-white/50 text-xs mb-3">系スコア</p>
           {result.details.typeRanking.map((r) => (
             <div key={r.type.id} className="mb-2">
               <div className="flex justify-between text-xs mb-1">
                 <span className="text-white/80">{r.type.name}</span>
-                <span className="text-white/50">{r.score.toFixed(1)}</span>
+                <span className="text-white/40">{r.score.toFixed(1)}</span>
               </div>
               <div className="w-full bg-white/10 rounded-full h-1.5">
                 <div
@@ -188,16 +206,22 @@ function ResultScreen({
             </div>
           ))}
 
+          <button
+            onClick={() => setShowDetail(!showDetail)}
+            className="w-full mt-4 text-white/40 text-xs hover:text-white/70 transition-colors"
+          >
+            {showDetail ? "▲ 11軸スコアを閉じる" : "▼ 11軸スコアを見る"}
+          </button>
+
           {showDetail && (
-            <div className="mt-4 pt-4 border-t border-white/10">
-              <p className="text-white/50 text-xs mb-3">11軸スコア</p>
+            <div className="mt-3 pt-3 border-t border-white/10">
               {AXIS_DEFINITIONS.map((axis) => {
                 const score = result.axisScores[axis.id];
                 return (
                   <div key={axis.id} className="mb-2">
                     <div className="flex justify-between text-xs mb-1">
                       <span className="text-white/70">{axis.name}</span>
-                      <span className="text-white/50">{score.toFixed(1)}</span>
+                      <span className="text-white/40">{score.toFixed(1)}</span>
                     </div>
                     <div className="w-full bg-white/10 rounded-full h-1">
                       <div
@@ -212,10 +236,9 @@ function ResultScreen({
           )}
         </div>
 
-        {/* Reset */}
         <button
           onClick={onReset}
-          className="w-full py-3 rounded-xl text-white/70 font-medium
+          className="w-full py-3 rounded-xl text-white/60 font-medium
             border border-white/20 hover:bg-white/10 active:scale-95 transition-all"
         >
           もう一度診断する
