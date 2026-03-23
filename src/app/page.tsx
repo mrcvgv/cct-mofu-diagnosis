@@ -442,7 +442,7 @@ function PremiumTeaser({ result }: { result: DiagnosisResult }) {
       </div>
 
       {/* Plan A: 住人プラン（サブスク・主推し） */}
-      <a href={LINKS.fortune} target="_blank" rel="noopener noreferrer"
+      <a href={`${LINKS.resident}?morph=${morph.id}`}
         className="relative block rounded-2xl overflow-hidden active:scale-95 transition-all"
         style={{ background: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #db2777 100%)" }}>
         <div className="px-5 py-5">
@@ -484,7 +484,7 @@ function PremiumTeaser({ result }: { result: DiagnosisResult }) {
       </a>
 
       {/* Plan B: 単発占い（買い切り・低ハードル） */}
-      <a href={LINKS.compatibility} target="_blank" rel="noopener noreferrer"
+      <a href={`${LINKS.fortune}?morph=${morph.id}`}
         className="flex items-center justify-between w-full px-5 py-4 rounded-2xl
           bg-white/8 hover:bg-white/12 active:scale-95
           transition-all border border-white/20">

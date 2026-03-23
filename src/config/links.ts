@@ -12,11 +12,11 @@ export const LINKS = {
   /** LINE公式アカウント */
   line_official: "https://lin.ee/example", // TODO: 実URLに変更
 
-  /** 詳細占い（有料）*/
-  fortune: "https://example.com/fortune", // TODO: 実URLに変更
+  /** 単発占い（¥490 買い切り） — morphIdをクエリで渡す: /fortune?morph={id} */
+  fortune: "/fortune",
 
-  /** 相性診断（有料）*/
-  compatibility: "https://example.com/compat", // TODO: 実URLに変更
+  /** 住人プラン（¥980/月 サブスク） — /resident?morph={id} */
+  resident: "/resident",
 
   /** グッズショップ */
   shop: "https://example.com/shop", // TODO: 実URLに変更
