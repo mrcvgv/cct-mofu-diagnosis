@@ -173,17 +173,12 @@ function ShareCard({ result }: { result: DiagnosisResult }) {
           )}
         </div>
 
-        {/* 系バッジ + 説明 */}
-        <div className="flex flex-col items-center mb-3 gap-2">
+        {/* 系バッジ */}
+        <div className="flex justify-center mb-3">
           <span className="px-5 py-1.5 rounded-full text-sm font-medium
             bg-white/15 border border-white/25 text-white/90">
             {type.name}
           </span>
-          {type.description && (
-            <p className="text-white/45 text-xs text-center leading-snug max-w-[260px]">
-              {type.description}
-            </p>
-          )}
         </div>
 
         {/* モフ名（最大） */}
@@ -219,9 +214,16 @@ function ShareCard({ result }: { result: DiagnosisResult }) {
         )}
 
         {/* フルネーム（小さく） */}
-        <p className="text-white/25 text-xs tracking-widest">
+        <p className="text-white/25 text-xs tracking-widest mb-3">
           {result.main.fullName}
         </p>
+
+        {/* 系の説明（補足） */}
+        {type.description && (
+          <p className="text-white/35 text-xs text-center leading-snug border-t border-white/10 pt-3">
+            {type.name}: {type.description}
+          </p>
+        )}
       </div>
     </div>
   );
