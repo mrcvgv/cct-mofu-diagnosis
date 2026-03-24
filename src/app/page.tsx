@@ -529,11 +529,11 @@ function ResultScreen({ result, onReset }: { result: DiagnosisResult; onReset: (
           📱 スクリーンショットしてシェアもできます
         </p>
 
-        {/* ② プレミアムティーザー（FOMO → 欲求生成） */}
-        <PremiumTeaser result={result} />
-
-        {/* ③ シェアボタン */}
+        {/* ② シェアボタン */}
         <ShareButtons result={result} />
+
+        {/* ③ プレミアムティーザー（FOMO → 欲求生成） */}
+        <PremiumTeaser result={result} />
 
         {/* ④ コミュニティ */}
         <CommunitySection morphName={result.main.morph.name} />
