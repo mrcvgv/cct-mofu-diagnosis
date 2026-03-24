@@ -18,18 +18,25 @@ function ResidentContent() {
   const morphId = params.get("morph") ?? "pan";
   const canceled = params.get("canceled") === "1";
   const [loading, setLoading] = useState<"monthly" | "yearly" | null>(null);
+  const [notReady, setNotReady] = useState(false);
 
   const morph = MORPH_MAP[morphId] ?? MORPH_MAP["pan"];
 
   const handlePurchase = async (plan: "monthly" | "yearly") => {
     setLoading(plan);
+    setNotReady(false);
     const res = await fetch("/api/checkout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ type: "resident", morphId }),
     });
-    const { url } = await res.json();
-    if (url) window.location.href = url;
+    const data = await res.json();
+    if (data.error === "payment_not_configured") {
+      setNotReady(true);
+      setLoading(null);
+      return;
+    }
+    if (data.url) window.location.href = data.url;
     else setLoading(null);
   };
 
@@ -70,6 +77,12 @@ function ResidentContent() {
             ))}
           </div>
         </div>
+
+        {notReady && (
+          <div className="bg-amber-500/15 border border-amber-400/30 rounded-2xl px-4 py-3 mb-4 text-amber-200 text-sm text-center">
+            決済機能は現在準備中です。もうしばらくお待ちください。
+          </div>
+        )}
 
         {/* 月額プラン */}
         <button

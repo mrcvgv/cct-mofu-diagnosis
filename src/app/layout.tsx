@@ -30,7 +30,28 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ja">
-      <body>{children}</body>
+      <body className="flex flex-col min-h-screen">
+        <main className="flex-1">{children}</main>
+        <footer className="border-t border-white/8 bg-[#0f3460]/60 py-5 px-4">
+          <div className="max-w-lg mx-auto flex flex-col items-center gap-3">
+            <nav className="flex flex-wrap justify-center gap-x-5 gap-y-1.5">
+              {[
+                { href: "/legal",   label: "特定商取引法に基づく表記" },
+                { href: "/privacy", label: "プライバシーポリシー" },
+                { href: "/terms",   label: "利用規約" },
+              ].map(({ href, label }) => (
+                <a key={href} href={href}
+                  className="text-white/35 text-xs hover:text-white/60 transition-colors">
+                  {label}
+                </a>
+              ))}
+            </nav>
+            <p className="text-white/20 text-xs">
+              &copy; {new Date().getFullYear()} Cream. All rights reserved.
+            </p>
+          </div>
+        </footer>
+      </body>
     </html>
   );
 }

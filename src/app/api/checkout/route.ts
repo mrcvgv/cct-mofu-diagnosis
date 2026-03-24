@@ -2,7 +2,10 @@ import Stripe from "stripe";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  if (!process.env.STRIPE_SECRET_KEY) {
+    return NextResponse.json({ error: "payment_not_configured" }, { status: 503 });
+  }
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
     apiVersion: "2026-02-25.clover",
   });
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "https://cct-mofu-diagnosis.vercel.app";
