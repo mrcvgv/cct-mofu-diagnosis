@@ -173,12 +173,17 @@ function ShareCard({ result }: { result: DiagnosisResult }) {
           )}
         </div>
 
-        {/* 系バッジ */}
-        <div className="flex justify-center mb-3">
+        {/* 系バッジ + 説明 */}
+        <div className="flex flex-col items-center mb-3 gap-2">
           <span className="px-5 py-1.5 rounded-full text-sm font-medium
             bg-white/15 border border-white/25 text-white/90">
             {type.name}
           </span>
+          {type.description && (
+            <p className="text-white/45 text-xs text-center leading-snug max-w-[260px]">
+              {type.description}
+            </p>
+          )}
         </div>
 
         {/* モフ名（最大） */}
@@ -574,11 +579,13 @@ function ResultScreen({ result, onReset }: { result: DiagnosisResult; onReset: (
         {/* ⑦ スコア詳細（折りたたみ） */}
         <div className="bg-white/8 rounded-2xl p-5 mb-4">
           <p className="text-white/45 text-xs mb-3">系スコア</p>
-          {result.details.typeRanking.map((r) => (
+
+          {/* 1位: 無料で表示 */}
+          {result.details.typeRanking.slice(0, 1).map((r) => (
             <div key={r.type.id} className="mb-2">
               <div className="flex justify-between text-xs mb-1">
-                <span className="text-white/70">{r.type.name}</span>
-                <span className="text-white/35">{r.score.toFixed(1)}</span>
+                <span className="text-white/70 font-medium">{r.type.name} <span className="text-white/35 font-normal">1位</span></span>
+                <span className="text-white/55">{r.score.toFixed(1)}</span>
               </div>
               <div className="w-full bg-white/10 rounded-full h-1.5">
                 <div className="bg-gradient-to-r from-pink-400 to-violet-500 h-1.5 rounded-full"
@@ -586,6 +593,27 @@ function ResultScreen({ result, onReset }: { result: DiagnosisResult; onReset: (
               </div>
             </div>
           ))}
+
+          {/* 2〜5位: ブラー + 有料ロック */}
+          <div className="relative mt-1">
+            <div className="space-y-2 blur-sm select-none pointer-events-none">
+              {result.details.typeRanking.slice(1).map((r, i) => (
+                <div key={r.type.id} className="mb-2">
+                  <div className="flex justify-between text-xs mb-1">
+                    <span className="text-white/50">{r.type.name} <span className="text-white/25">{i + 2}位</span></span>
+                    <span className="text-white/30">{r.score.toFixed(1)}</span>
+                  </div>
+                  <div className="w-full bg-white/10 rounded-full h-1.5">
+                    <div className="bg-gradient-to-r from-pink-400/50 to-violet-500/50 h-1.5 rounded-full"
+                      style={{ width: `${(r.score / 10) * 100}%` }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-1">
+              <span className="text-white/50 text-xs">🔒 住人プランで全部見る</span>
+            </div>
+          </div>
 
           <button onClick={() => setShowDetail(!showDetail)}
             className="w-full mt-4 text-white/35 text-xs hover:text-white/60 transition-colors">
