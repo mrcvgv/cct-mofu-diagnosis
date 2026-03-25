@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
 const SITE_URL = "https://cct-mofu-diagnosis.vercel.app";
@@ -31,6 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ja">
       <body className="flex flex-col min-h-screen">
+        <Analytics />
         <main className="flex-1">{children}</main>
         <footer className="border-t border-white/8 bg-[#0f3460]/60 py-5 px-4">
           <div className="max-w-lg mx-auto flex flex-col items-center gap-3">
@@ -47,7 +49,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               ))}
             </nav>
             <p className="text-white/20 text-xs">
-              &copy; {new Date().getFullYear()} Cream. All rights reserved.
+              &copy; {new Date().getFullYear()} cream / Fuller Design / Peakful. All rights reserved.
             </p>
           </div>
         </footer>

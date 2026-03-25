@@ -9,15 +9,15 @@ export const SITE_CONFIG = {
 
   // ── 法的表示名（特商法 主軸） ────────────────────────────
   /** 個人事業主の場合は戸籍上の氏名。法人の場合は登記商号。 */
-  operatorLegalName: "TODO: [本名]",
+  operatorLegalName: "佐藤康平",
   /** 屋号 / ブランド名 */
-  operatorTradeName: "Cream",
+  operatorTradeName: "cream",
 
   // ── 住所・連絡先 ─────────────────────────────────────────
-  address: "",  // TODO: 住所（空欄の場合は請求時開示と表示）
-  phone: null as string | null,  // TODO: 電話番号（null = 請求時開示）
-  disclosePhoneOnRequest: true,
-  contactEmail: "TODO: contact@example.com",
+  address: "〒160-0023 東京都新宿区西新宿三丁目3番13号 西新宿水間ビル6階",
+  phone: "08035868876" as string | null,
+  disclosePhoneOnRequest: false,
+  contactEmail: "hi@creama.xyz",
 
   // ── サービス ─────────────────────────────────────────────
   siteUrl: "https://cct-mofu-diagnosis.vercel.app",

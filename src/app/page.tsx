@@ -14,6 +14,7 @@ import {
 } from "@/config/links";
 import type { DiagnosisResult, Question } from "@/types";
 import { getTopCompatibility, getBottomCompatibility } from "@/data/compatibility";
+import { track } from "@vercel/analytics/react";
 
 type Phase = "start" | "quiz" | "result";
 
@@ -249,6 +250,7 @@ function ShareButtons({ result }: { result: DiagnosisResult }) {
     ).catch(() => {});
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+    track("share", { platform: "copy", morph: morph.id });
   };
 
   return (
@@ -271,6 +273,7 @@ function ShareButtons({ result }: { result: DiagnosisResult }) {
         {/* X と LINE — 大きめ2列 */}
         <div className="px-4 pb-3 grid grid-cols-2 gap-3">
           <a href={tweetUrl} target="_blank" rel="noopener noreferrer"
+            onClick={() => track("share", { platform: "x", morph: morph.id })}
             className="flex flex-col items-center justify-center gap-2.5 py-5 rounded-2xl
               bg-black hover:bg-zinc-800 active:scale-95
               transition-all shadow-xl shadow-black/50 text-white">
@@ -281,6 +284,7 @@ function ShareButtons({ result }: { result: DiagnosisResult }) {
           </a>
 
           <a href={lineUrl} target="_blank" rel="noopener noreferrer"
+            onClick={() => track("share", { platform: "line", morph: morph.id })}
             className="flex flex-col items-center justify-center gap-2.5 py-5 rounded-2xl
               active:scale-95 transition-all shadow-xl shadow-green-900/50 text-white"
             style={{ backgroundColor: "#06C755" }}>
@@ -294,6 +298,7 @@ function ShareButtons({ result }: { result: DiagnosisResult }) {
         {/* OG画像を開く */}
         <div className="px-4 pb-2">
           <a href={ogImageUrl} target="_blank" rel="noopener noreferrer"
+            onClick={() => track("share", { platform: "og_image", morph: morph.id })}
             className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl
               bg-white/10 hover:bg-white/18 active:scale-95
               transition-all border border-white/20 text-white font-medium text-sm">
@@ -456,6 +461,7 @@ function PremiumTeaser({ result }: { result: DiagnosisResult }) {
 
       {/* ── Plan A: 住人プラン（メインCTA） ── */}
       <a href={`${LINKS.resident}?morph=${morph.id}`}
+        onClick={() => track("cta_click", { plan: "resident", morph: morph.id })}
         className="relative block rounded-2xl overflow-hidden active:scale-95 transition-all"
         style={{ background: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #db2777 100%)" }}>
         <div className="absolute inset-0 pointer-events-none"
@@ -500,6 +506,7 @@ function PremiumTeaser({ result }: { result: DiagnosisResult }) {
 
       {/* ── Plan B: 単発占い（サブCTA） ── */}
       <a href={`${LINKS.fortune}?morph=${morph.id}`}
+        onClick={() => track("cta_click", { plan: "fortune", morph: morph.id })}
         className="flex items-center justify-between w-full px-5 py-4 rounded-2xl
           bg-white/8 hover:bg-white/12 active:scale-95
           transition-all border border-white/15">
@@ -666,8 +673,21 @@ export default function Home() {
     const question = QUESTIONS[currentQ];
     const newAnswers = { ...answers, [question.id]: score };
     if (currentQ + 1 >= QUESTIONS.length) {
-      setResult(diagnose({ answers: newAnswers }, QUESTIONS, MORPH_PROFILES, TYPE_PROFILES, { subResultCount: 2 }));
+      const diagResult = diagnose({ answers: newAnswers }, QUESTIONS, MORPH_PROFILES, TYPE_PROFILES, { subResultCount: 2 });
+      setResult(diagResult);
       setPhase("result");
+      // Track to Vercel Analytics
+      track("diagnosis_complete", { morph: diagResult.main.morph.id, type: diagResult.main.type.id });
+      // Track to KV for /stats page (fire-and-forget)
+      fetch("/api/stats/track", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          morphId: diagResult.main.morph.id,
+          typeId: diagResult.main.type.id,
+          axisScores: diagResult.axisScores,
+        }),
+      }).catch(() => {});
     } else {
       setAnswers(newAnswers);
       setCurrentQ(currentQ + 1);
