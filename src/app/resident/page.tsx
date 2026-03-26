@@ -1,8 +1,9 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { Suspense, useState } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { MORPH_MAP } from "@/data/morphProfiles";
+import { getSessionId } from "@/lib/session";
 
 const PLAN_FEATURES = [
   { icon: "🏠", label: "デジタル住民票", detail: "あなただけの住民No.付き住民証（シェア可能）" },
@@ -22,13 +23,21 @@ function ResidentContent() {
 
   const morph = MORPH_MAP[morphId] ?? MORPH_MAP["pan"];
 
+  useEffect(() => {
+    fetch("/api/stats/interact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ eventType: "page_view_resident", sessionId: getSessionId(), morphId }),
+    }).catch(() => {});
+  }, [morphId]);
+
   const handlePurchase = async (plan: "monthly" | "yearly") => {
     setLoading(plan);
     setNotReady(false);
     const res = await fetch("/api/checkout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ type: "resident", morphId }),
+      body: JSON.stringify({ type: "resident", morphId, sessionId: getSessionId(), plan }),
     });
     const data = await res.json();
     if (data.error === "payment_not_configured") {

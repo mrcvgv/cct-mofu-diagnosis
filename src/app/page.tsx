@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { QUESTIONS } from "@/data/questions";
 import { MORPH_PROFILES } from "@/data/morphProfiles";
 import { TYPE_PROFILES } from "@/data/typeProfiles";
@@ -15,6 +15,15 @@ import {
 import type { DiagnosisResult, Question } from "@/types";
 import { getTopCompatibility, getBottomCompatibility } from "@/data/compatibility";
 import { track } from "@vercel/analytics/react";
+import { getSessionId, getRetakeCount, incrementRetakeCount } from "@/lib/session";
+
+function postInteract(eventType: string, morphId?: string, properties?: Record<string, unknown>) {
+  fetch("/api/stats/interact", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ eventType, sessionId: getSessionId(), morphId, properties }),
+  }).catch(() => {});
+}
 
 type Phase = "start" | "quiz" | "result";
 
@@ -251,6 +260,7 @@ function ShareButtons({ result }: { result: DiagnosisResult }) {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
     track("share", { platform: "copy", morph: morph.id });
+    postInteract("share_copy", morph.id);
   };
 
   return (
@@ -273,7 +283,7 @@ function ShareButtons({ result }: { result: DiagnosisResult }) {
         {/* X と LINE — 大きめ2列 */}
         <div className="px-4 pb-3 grid grid-cols-2 gap-3">
           <a href={tweetUrl} target="_blank" rel="noopener noreferrer"
-            onClick={() => track("share", { platform: "x", morph: morph.id })}
+            onClick={() => { track("share", { platform: "x", morph: morph.id }); postInteract("share_x", morph.id); }}
             className="flex flex-col items-center justify-center gap-2.5 py-5 rounded-2xl
               bg-black hover:bg-zinc-800 active:scale-95
               transition-all shadow-xl shadow-black/50 text-white">
@@ -284,7 +294,7 @@ function ShareButtons({ result }: { result: DiagnosisResult }) {
           </a>
 
           <a href={lineUrl} target="_blank" rel="noopener noreferrer"
-            onClick={() => track("share", { platform: "line", morph: morph.id })}
+            onClick={() => { track("share", { platform: "line", morph: morph.id }); postInteract("share_line", morph.id); }}
             className="flex flex-col items-center justify-center gap-2.5 py-5 rounded-2xl
               active:scale-95 transition-all shadow-xl shadow-green-900/50 text-white"
             style={{ backgroundColor: "#06C755" }}>
@@ -298,7 +308,7 @@ function ShareButtons({ result }: { result: DiagnosisResult }) {
         {/* OG画像を開く */}
         <div className="px-4 pb-2">
           <a href={ogImageUrl} target="_blank" rel="noopener noreferrer"
-            onClick={() => track("share", { platform: "og_image", morph: morph.id })}
+            onClick={() => { track("share", { platform: "og_image", morph: morph.id }); postInteract("share_og", morph.id); }}
             className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl
               bg-white/10 hover:bg-white/18 active:scale-95
               transition-all border border-white/20 text-white font-medium text-sm">
@@ -461,7 +471,7 @@ function PremiumTeaser({ result }: { result: DiagnosisResult }) {
 
       {/* ── Plan A: 住人プラン（メインCTA） ── */}
       <a href={`${LINKS.resident}?morph=${morph.id}`}
-        onClick={() => track("cta_click", { plan: "resident", morph: morph.id })}
+        onClick={() => { track("cta_click", { plan: "resident", morph: morph.id }); postInteract("cta_resident", morph.id); }}
         className="relative block rounded-2xl overflow-hidden active:scale-95 transition-all"
         style={{ background: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #db2777 100%)" }}>
         <div className="absolute inset-0 pointer-events-none"
@@ -506,7 +516,7 @@ function PremiumTeaser({ result }: { result: DiagnosisResult }) {
 
       {/* ── Plan B: 単発占い（サブCTA） ── */}
       <a href={`${LINKS.fortune}?morph=${morph.id}`}
-        onClick={() => track("cta_click", { plan: "fortune", morph: morph.id })}
+        onClick={() => { track("cta_click", { plan: "fortune", morph: morph.id }); postInteract("cta_fortune", morph.id); }}
         className="flex items-center justify-between w-full px-5 py-4 rounded-2xl
           bg-white/8 hover:bg-white/12 active:scale-95
           transition-all border border-white/15">
@@ -669,23 +679,50 @@ export default function Home() {
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [result, setResult] = useState<DiagnosisResult | null>(null);
 
+  const quizStartTimeRef    = useRef<number>(0);
+  const questionStartTimeRef = useRef<number>(0);
+  const questionTimingsRef   = useRef<Record<string, number>>({});
+
+  const handleStart = () => {
+    quizStartTimeRef.current     = Date.now();
+    questionStartTimeRef.current = Date.now();
+    questionTimingsRef.current   = {};
+    postInteract("quiz_start");
+    setPhase("quiz");
+  };
+
   const handleAnswer = (score: number) => {
     const question = QUESTIONS[currentQ];
+    // 問ごとの所要時間を記録
+    questionTimingsRef.current[question.id] = Date.now() - questionStartTimeRef.current;
+    questionStartTimeRef.current = Date.now();
+
     const newAnswers = { ...answers, [question.id]: score };
+
     if (currentQ + 1 >= QUESTIONS.length) {
       const diagResult = diagnose({ answers: newAnswers }, QUESTIONS, MORPH_PROFILES, TYPE_PROFILES, { subResultCount: 2 });
       setResult(diagResult);
       setPhase("result");
-      // Track to Vercel Analytics
+
+      // Vercel Analytics
       track("diagnosis_complete", { morph: diagResult.main.morph.id, type: diagResult.main.type.id });
-      // Track to KV for /stats page (fire-and-forget)
+
+      // Supabase — 全データを保存
       fetch("/api/stats/track", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          morphId: diagResult.main.morph.id,
-          typeId: diagResult.main.type.id,
-          axisScores: diagResult.axisScores,
+          morphId:         diagResult.main.morph.id,
+          typeId:          diagResult.main.type.id,
+          axisScores:      diagResult.axisScores,
+          sessionId:       getSessionId(),
+          subMorphIds:     diagResult.sub.map((s) => s.morph.id),
+          answers:         newAnswers,
+          timeSpentMs:     Date.now() - quizStartTimeRef.current,
+          questionTimings: questionTimingsRef.current,
+          referrer:        typeof document !== "undefined" ? document.referrer : "",
+          isMobile:        typeof navigator !== "undefined" ? /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) : false,
+          retakeCount:     getRetakeCount(),
         }),
       }).catch(() => {});
     } else {
@@ -694,9 +731,15 @@ export default function Home() {
     }
   };
 
-  const reset = () => { setPhase("start"); setCurrentQ(0); setAnswers({}); setResult(null); };
+  const reset = () => {
+    incrementRetakeCount();
+    setPhase("start");
+    setCurrentQ(0);
+    setAnswers({});
+    setResult(null);
+  };
 
-  if (phase === "start") return <StartScreen onStart={() => setPhase("quiz")} />;
+  if (phase === "start") return <StartScreen onStart={handleStart} />;
   if (phase === "quiz") return <QuizScreen question={QUESTIONS[currentQ]} current={currentQ + 1} total={QUESTIONS.length} onAnswer={handleAnswer} />;
   return <ResultScreen result={result!} onReset={reset} />;
 }

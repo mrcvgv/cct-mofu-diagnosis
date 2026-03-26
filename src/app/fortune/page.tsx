@@ -1,9 +1,10 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { Suspense, useState } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { MORPH_MAP } from "@/data/morphProfiles";
 import { FORTUNE_MAP, FORTUNE_MONTH } from "@/data/fortunes";
+import { getSessionId } from "@/lib/session";
 
 function StarScore({ score }: { score: number }) {
   return (
@@ -25,13 +26,21 @@ function FortuneContent() {
   const morph = MORPH_MAP[morphId] ?? MORPH_MAP["pan"];
   const fortune = FORTUNE_MAP[morphId] ?? FORTUNE_MAP["pan"];
 
+  useEffect(() => {
+    fetch("/api/stats/interact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ eventType: "page_view_fortune", sessionId: getSessionId(), morphId }),
+    }).catch(() => {});
+  }, [morphId]);
+
   const handlePurchase = async () => {
     setLoading(true);
     setNotReady(false);
     const res = await fetch("/api/checkout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ type: "fortune", morphId }),
+      body: JSON.stringify({ type: "fortune", morphId, sessionId: getSessionId() }),
     });
     const data = await res.json();
     if (data.error === "payment_not_configured") {
